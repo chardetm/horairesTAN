@@ -38,15 +38,15 @@ function changeListeArrets(arrets) {
 
 // Partie 3 : chargement des horaires d'un arrêt
 
-var arret_courrant = "";
+var arret_courant = "";
 
 function rechargeArret(montrer_chargement=false) {
-    if (arret_courrant === '') {
+    if (arret_courant === '') {
         $("#lignes").html("");
     } else {
         if (montrer_chargement)
             $("#lignes").html("Chargement...");
-        $.getJSON(`/arret/${arret_courrant}`, changeArret);
+        $.getJSON(`/arret/${arret_courant}`, changeArret);
     }
 }
 
@@ -88,7 +88,7 @@ function directionHtml(details_direction) {
 }
 
 $('#ligne-select').on('change', function() {
-    arret_courrant = this.value;
+    arret_courant = this.value;
     rechargeArret(true);
 });
 
