@@ -50,21 +50,14 @@ function rechargeArret(montrer_chargement=false) {
     }
 }
 
-function changeArret(passages_arret) {
-    lignes = mettreEnFormePassages(passages_arret);
-
+function changeArret(lignes) {
     lignes_html = ``;
-    for (let [ligne, details_ligne] of lignes) {
+    for (let details_ligne of lignes) {
+        let ligne = details_ligne["nom"];
         lignes_html += `<div class="ligne col-xl-3 col-sm-6 col-12"><div class="card">
                           <h2 class="card-header">${ligne}</h2><div class="card-body">`;
-        for (let [direction, details_direction] of details_ligne.get("directions")) {
-            lignes_html += `<div class="direction">
-                              <h3 class="card-title">${details_direction.get("terminus")}</h3>
-                              <ol class="passages">`;
-            for (let passage of details_direction.get("passages").slice(0,10)) {
-                lignes_html += `<li>${passage}</li>`;
-            }
-            lignes_html += `</ol></div>`;
+        for (let details_direction of details_ligne["directions"]) {
+            lignes_html += directionHtml(details_direction);
         }
         lignes_html += `</div></div></div>`;
     }
@@ -72,34 +65,26 @@ function changeArret(passages_arret) {
     $("#lignes").html(lignes_html);
 }
 
-function mettreEnFormePassages(passages_arret) {
-    let lignes = new Map();
-    for (let passage of passages_arret) {
-        let ligne = passage["ligne"]["numLigne"];
-        let type_ligne = passage["ligne"]["typeLigne"];
-        let direction = passage["sens"];
-        let terminus = passage["terminus"];
-        let temps = passage["temps"];
-        if (!lignes.has(ligne)) {
-            lignes.set(ligne, new Map([
-                ['type', type_ligne],
-                ['directions', new Map()]
-            ]));
-        }
-        let ligne_directions = lignes.get(ligne).get("directions");
-        if (!ligne_directions.has(direction)) {
-            ligne_directions.set(direction, new Map([
-                ["terminus", terminus],
-                ["passages", []]
-            ]));
-        }
-        if (temps === "horaire.proche") {
-            temps = "Proche";
-        }
-        ligne_directions.get(direction).get("passages").push(temps);
-
+function directionHtml(details_direction) {
+    let dictionnaire_terminus = details_direction["terminus"];
+    let liste_terminus = Object.keys(dictionnaire_terminus);
+    let terminus_string = liste_terminus[0];
+    if (liste_terminus.length > 1) {
+        terminus_string = Object.entries(dictionnaire_terminus).map(pair => `${pair[0]} (${pair[1]})`).join(" / ");
     }
-    return lignes;
+
+    let direction_html = `<div class="direction">
+                              <h3 class="card-title">${terminus_string}</h3>
+                              <ol class="passages">`;
+    for (let passage of details_direction["passages"].slice(0,10)) {
+        if (liste_terminus.length > 1) {
+            direction_html += `<li>${passage["temps"]} (${passage["no_terminus"]})</li>`;
+        } else {
+            direction_html += `<li>${passage["temps"]}</li>`;
+        }
+    }
+    direction_html += `</ol></div>`;
+    return direction_html;
 }
 
 $('#ligne-select').on('change', function() {
