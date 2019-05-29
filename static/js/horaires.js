@@ -39,10 +39,11 @@ function changeListeArrets(arrets) {
 // Partie 3 : chargement des horaires d'un arrêt
 
 var arret_courant = "";
+var message_bienvenue = $("#lignes").html();
 
 function rechargeArret(montrer_chargement=false) {
     if (arret_courant === '') {
-        $("#lignes").html("");
+        $("#lignes").html(message_bienvenue);
     } else {
         if (montrer_chargement)
             $("#lignes").html("Chargement...");
