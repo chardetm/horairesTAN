@@ -1,17 +1,17 @@
 // Partie 1 : thème sombre
 
-var themes = [
+let themes = [
     $("#theme").attr('href'),
     "https://bootswatch.com/4/darkly/bootstrap.min.css"
 ];
-var theme_courrant = 0;
+let theme_courant = 0;
 
 function changeTheme() {
-    theme_courrant = (theme_courrant+1) % (themes.length);
-    $("#theme").attr('href', themes[theme_courrant])
+    theme_courant = (theme_courant+1) % (themes.length);
+    $("#theme").attr('href', themes[theme_courant])
 }
 
-$('#theme-button').on('click', changeTheme);
+$('#theme-button').click(changeTheme);
 
 
 // Partie 2 : chargement de la liste des arrêts
@@ -35,11 +35,15 @@ function changeListeArrets(arrets) {
     $("#ligne-select").html(html_select_options);
 }
 
+$(function() {
+    rechargeListeArrets();
+});
+
 
 // Partie 3 : chargement des horaires d'un arrêt
 
-var arret_courant = "";
-var message_bienvenue = $("#lignes").html();
+let arret_courant = "";
+let message_bienvenue = $("#lignes").html();
 
 function rechargeArret(montrer_chargement=false) {
     if (arret_courant === '') {
@@ -52,7 +56,7 @@ function rechargeArret(montrer_chargement=false) {
 }
 
 function changeArret(lignes) {
-    lignes_html = ``;
+    let lignes_html = ``;
     for (let details_ligne of lignes) {
         let ligne = details_ligne["nom"];
         lignes_html += `<div class="ligne col-xl-3 col-sm-6 col-12"><div class="card">
@@ -76,7 +80,7 @@ function directionHtml(details_direction) {
 
     let direction_html = `<div class="direction">
                               <h3 class="card-title">${terminus_string}</h3>
-                              <ol class="passages">`;
+                              <ul class="passages">`;
     for (let passage of details_direction["passages"].slice(0,10)) {
         if (liste_terminus.length > 1) {
             direction_html += `<li>${passage["temps"]} (${passage["no_terminus"]})</li>`;
@@ -84,16 +88,15 @@ function directionHtml(details_direction) {
             direction_html += `<li>${passage["temps"]}</li>`;
         }
     }
-    direction_html += `</ol></div>`;
+    direction_html += `</ul></div>`;
     return direction_html;
 }
 
-$('#ligne-select').on('change', function() {
+$('#ligne-select').change(function() {
     arret_courant = this.value;
     rechargeArret(true);
 });
 
 $(function() {
-    rechargeListeArrets();
     setInterval(rechargeArret, 30000);
 });

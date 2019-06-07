@@ -1,9 +1,7 @@
 # Horaires TAN
 
-Auteur : Maverick Chardet
-
-Licence : WTFPL
-
+Auteur : Maverick Chardet  
+Licence : WTFPL  
 Site : https://github.com/chardetm/horairesTAN
 
 ## Crédits
